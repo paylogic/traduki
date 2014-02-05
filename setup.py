@@ -17,8 +17,8 @@ class ToxTestCommand(TestCommand):
     def run_tests(self):
         """Invoke the test runner (tox)."""
         #import here, cause outside the eggs aren't loaded
-        import tox
-        errno = tox.cmdline(self.test_args)
+        import detox.main
+        errno = detox.main.main(self.test_args)
         sys.exit(errno)
 
 long_description = []
@@ -40,7 +40,7 @@ setup(
     ],
     packages=find_packages(exclude=['ez_setup', 'tests']),
     dependency_links=[],
-    tests_require=['tox'],
+    tests_require=['detox'],
     cmdclass={'test': ToxTestCommand},
     include_package_data=True,
     keywords='sqlalchemy i18n internationalisation',
