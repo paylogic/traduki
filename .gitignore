@@ -1,0 +1,15 @@
+*.egg
+*.egg-info
+*.pyc
+*.pyo
+/.tox
+/bin
+/include
+/lib
+/local
+/build
+/dist
+.cache
+/README.html
+/.hg
+/.hgignore
