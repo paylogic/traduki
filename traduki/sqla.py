@@ -6,12 +6,12 @@ please refer to README.rst of the package for more information.
 
 public functions: initialize i18n_column, i18n_relation.
 """
+from sqlalchemy import Column, Integer, ForeignKey, UnicodeText
+from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.interfaces import AttributeExtension
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.sql import operators as oper, functions as func
-from sqlalchemy import Column, Integer, ForeignKey, UnicodeText
-from sqlalchemy.exc import ArgumentError
 
 from traduki import config
 from traduki import helpers
