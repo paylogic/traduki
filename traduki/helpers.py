@@ -109,7 +109,7 @@ def get_text_from_dict(mydict, code=None, chain=None):
         return get_text_from_dict(mydict, code, chain)
 
     # nothing helped, falling back to just values of the dict provided
-    return next(_dict.values(), None)
+    return next(iter(_dict.values()), None)
 
 
 def get_ordered_languages():
