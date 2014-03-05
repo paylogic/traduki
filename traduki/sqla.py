@@ -54,7 +54,7 @@ class TranslationMixin(object):
         return bool(unicode(self))
 
 
-def initialize(base, languages, get_current_language_callback, get_language_chain_callback):
+def initialize(base, languages, get_current_language_callback, get_language_chain_callback, attributes=None):
     """Initialize using given declarative base.
 
     :param base: SQLAlchemy declarative base class
@@ -62,6 +62,8 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
     :param get_current_language_callback: function which returns current language code
     :param get_language_chain_callback: function which returns language chain `dict`
         in format: {'<selector>': '<language code>'}
+    :param attributes: `dict` of future Translation class additional attributes or overrides.
+    For example: {'__tablename__': 'some_other_table'
 
     """
 
@@ -69,7 +71,10 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
     config.LANGUAGE_CHAIN_CALLBACK = get_language_chain_callback
     config.LANGUAGES = languages
 
-    attributes = dict(((lang, Column(UnicodeText, nullable=True)) for lang in languages))
+    if attributes is None:
+        attributes = {}
+
+    attributes.update(dict(((lang, Column(UnicodeText, nullable=True)) for lang in languages)))
 
     global Translation
 

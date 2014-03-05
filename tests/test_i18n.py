@@ -93,3 +93,12 @@ def test_i18n_field(query, model, session):
 
     assert model.title.get_dict() == {'en': 'En Title', 'pt': 'Pt Title'}
     assert model.title.get_text() == 'En Title'
+
+
+def test_class_custom_table(languages):
+    """Test initialization with custom table."""
+    Base = declarative_base()
+
+    traduki.initialize(Base, languages, lambda: 'en', lambda: {}, attributes={'__tablename__': 'custom_table'})
+
+    assert traduki.sqla.Translation.__tablename__ == 'custom_table'
