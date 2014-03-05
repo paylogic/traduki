@@ -36,7 +36,7 @@ class TranslationMixin(object):
 
     def get_text(self, code=None, chain=None):
         """Get the text for specified language code.
-        Delegates to :py:func:`traduki.helpers.get_text_from_dict`, with all the given arguments and
+        Delegates to :py:func:`LocalizedString.get_text_from_dict`, with all the given arguments and
         a dictionary, representing this :py:class:`Translation`.
         The dictionary is created using :py:func:`get_dict`.
 
@@ -106,7 +106,7 @@ class TranslationComparator(RelationshipProperty.Comparator):
         Looking into the the next language if the given language is not filled in.
         """
         related = self.property.mapper.class_
-        cols = [getattr(related, lang) for lang in helpers.get_ordered_languages() if hasattr(related, lang)]
+        cols = [getattr(related, lang) for lang in helpers.ordered_languages() if hasattr(related, lang)]
         return self.has(op(func.coalesce(*cols), other, escape=escape))
 
 
@@ -137,7 +137,7 @@ class TranslationExtension(AttributeExtension):
         if oldvalue is None:
             return Translation(**value_dict)
         else:
-            for lang in helpers.get_ordered_languages():
+            for lang in helpers.ordered_languages():
                 setattr(oldvalue, lang, value_dict.get(lang))
 
         return oldvalue
