@@ -1,3 +1,3 @@
-from traduki.sqla import initialize, i18n_column, i18n_relation
+from traduki.sqla import initialize
 
-__all__ = (initialize.__name__, i18n_column.__name__, i18n_relation.__name__)
+__all__ = (initialize.__name__)

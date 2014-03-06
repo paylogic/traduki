@@ -35,6 +35,7 @@ setup(
     author='Paylogic International',
     author_email='developers@paylogic.com',
     license='MIT',
+    url='https://github.com/paylogic/traduki',
     install_requires=[
         'SQLAlchemy'
     ],

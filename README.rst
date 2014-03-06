@@ -40,15 +40,15 @@ traduki usage example:
         """Language chain (fallback rule) callback for our project."""
         return {'*': request.locale}
 
-    traduki.initialize(Base, ['en', 'ru'], get_current_language, get_language_chain)
+    i18n_attributes = traduki.initialize(Base, ['en', 'ru'], get_current_language, get_language_chain)
 
     Session = sessionmaker(bind=engine)
     sess = Session()
 
     class MyModel(Base)
 
-        title_id = traduki.i18n_column(nullable=False, unique=False)
-        title = traduki.i18n_relation(title_id)
+        title_id = i18n_attributes.i18n_column(nullable=False, unique=False)
+        title = i18n_attributes.i18n_relation(title_id)
         """Title."""
 
     my_object = MyModel()
