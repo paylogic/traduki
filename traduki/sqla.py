@@ -81,7 +81,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
     if attributes is None:
         attributes = {}
 
-    attributes.update(dict(((lang, Column(UnicodeText, nullable=True)) for lang in languages)))
+    attributes.update(dict(((lang, Column(UnicodeText, nullable=True, index=True)) for lang in languages)))
 
     Translation = type('Translation', (TranslationMixin, base), attributes)
 
