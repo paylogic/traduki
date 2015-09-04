@@ -78,7 +78,6 @@ def get_text_from_dict(mydict, code=None, chain=None):
         if chain and '*' in chain:
             # found 'everything' chain element
             code = chain['*']
-        return next(_dict.values(), u'')
     try:
         code_base, code_variant = check_language_code(code)
     except (TypeError, KeyError):
