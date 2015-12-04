@@ -3,6 +3,7 @@
 *.pyc
 *.pyo
 *.orig
+.env
 /.tox
 /bin
 /include
