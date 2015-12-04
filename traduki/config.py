@@ -1,7 +1,13 @@
 """Configuration for i18n."""
 
-LANGUAGE_CALLBACK = lambda: 'en'
 
-LANGUAGE_CHAIN_CALLBACK = lambda: {'*': LANGUAGE_CALLBACK()}
+def LANGUAGE_CALLBACK():
+    """Current language callback."""
+    return 'en'
+
+
+def LANGUAGE_CHAIN_CALLBACK():
+    """Language chain callback."""
+    return {'*': LANGUAGE_CALLBACK()}
 
 LANGUAGES = ['en']

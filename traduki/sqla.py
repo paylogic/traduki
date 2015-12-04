@@ -10,7 +10,9 @@ import collections
 
 from sqlalchemy import Column, Integer, ForeignKey, UnicodeText
 from sqlalchemy.exc import ArgumentError
+from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm.interfaces import AttributeExtension
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.sql import operators as oper, functions as func
@@ -134,6 +136,8 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             :param oldvalue: The current value.
             :param initiator: SQLAlchemy initiator (accessor).
             """
+            if state._strong_obj is not None:
+                flag_modified(state._strong_obj, inspect(state._strong_obj.__class__).primary_key[0].name)
             if value is None:
                 return None
 
