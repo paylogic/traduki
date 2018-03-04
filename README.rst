@@ -5,7 +5,7 @@ The ``traduki`` package provides internationalisation helper classes for SQLAlch
 
 .. image:: https://api.travis-ci.org/paylogic/traduki.png
    :target: https://travis-ci.org/paylogic/traduki
-.. image:: https://pypip.in/v/traduki/badge.png
+.. image:: https://img.shields.io/pypi/v/traduki.svg
    :target: https://crate.io/packages/traduki/
 .. image:: https://coveralls.io/repos/paylogic/traduki/badge.png?branch=master
    :target: https://coveralls.io/r/paylogic/traduki
