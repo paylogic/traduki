@@ -1,7 +1,7 @@
 language: python
 # command to install dependencies
 install:
-  - pip install python-coveralls virtualenv
+  - pip install python-coveralls virtualenv tox
 # # command to run tests
 script: tox
 after_success:
