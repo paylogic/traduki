@@ -3,7 +3,7 @@ language: python
 install:
   - pip install python-coveralls virtualenv
 # # command to run tests
-script: python setup.py test
+script: tox
 after_success:
   - pip install -r requirements-testing.txt -e .
   - py.test --cov=traduki --cov-report=term-missing tests
