@@ -109,7 +109,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             return self.operate(oper.contains_op, other, escape=escape)
 
         def _do_compare(self, op, other, escape):
-            """Perform comparison operations to the columns of Translation model.
+            """Perform comparison operations to the columns of the Translation model.
             Looking into all languages using the OR operator.
             """
             related = self.property.mapper.class_
