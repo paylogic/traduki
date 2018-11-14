@@ -113,4 +113,6 @@ def test_set(model):
 def test_comparator(session, model, model_class):
     """Test field comparator."""
     assert model in session.query(model_class).filter(model_class.title.startswith('En Title'))
-    assert model not in session.query(model_class).filter(model_class.title.startswith('Pt Title'))
+    assert model in session.query(model_class).filter(model_class.title.startswith('Pt Title'))
+    assert model in session.query(model_class).filter(model_class.title.contains('En'))
+    assert model in session.query(model_class).filter(model_class.title.contains('Pt'))

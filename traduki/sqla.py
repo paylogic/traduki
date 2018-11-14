@@ -112,11 +112,15 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
 
         def _do_compare(self, op, other, escape):
             """Perform coalesced comparison operations to the columns of Translation model.
-            Looking into the the next language if the given language is not filled in.
+            Looking into all languages using the OR operator.
             """
             related = self.property.mapper.class_
-            cols = [getattr(related, lang) for lang in helpers.get_ordered_languages() if hasattr(related, lang)]
-            return self.has(op(func.coalesce(*cols), other, escape=escape))
+            ops = [
+                op(getattr(related, lang), other, escape=escape)
+                for lang in helpers.get_ordered_languages()
+                if hasattr(related, lang)
+            ]
+            return self.has(oper.or_(*ops))
 
     class TranslationExtension(AttributeExtension):
         """AttributeExtension to override the behavior of .set, to accept a dict as new value."""
