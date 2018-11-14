@@ -95,9 +95,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         All the `like` operations will look into next language if the specified language is not filled in.
         """
 
-        LIKE_OPS = set([
-            oper.like_op, oper.contains_op, oper.startswith_op,
-            oper.endswith_op])
+        LIKE_OPS = {oper.like_op, oper.contains_op, oper.startswith_op, oper.endswith_op}
 
         # Only the operators in LIKE_OPS are allowed on this relationship
         def operate(self, op, *other, **kw):
@@ -111,7 +109,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             return self.operate(oper.contains_op, other, escape=escape)
 
         def _do_compare(self, op, other, escape):
-            """Perform coalesced comparison operations to the columns of Translation model.
+            """Perform comparison operations to the columns of Translation model.
             Looking into all languages using the OR operator.
             """
             related = self.property.mapper.class_
