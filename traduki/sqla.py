@@ -13,7 +13,7 @@ from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.interfaces import AttributeExtension
 from sqlalchemy.orm.properties import RelationshipProperty
-from sqlalchemy.sql import operators as oper, functions as func
+from sqlalchemy.sql import operators as oper, or_
 
 from traduki import config
 from traduki import helpers
@@ -95,9 +95,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         All the `like` operations will look into next language if the specified language is not filled in.
         """
 
-        LIKE_OPS = set([
-            oper.like_op, oper.contains_op, oper.startswith_op,
-            oper.endswith_op])
+        LIKE_OPS = {oper.like_op, oper.contains_op, oper.startswith_op, oper.endswith_op}
 
         # Only the operators in LIKE_OPS are allowed on this relationship
         def operate(self, op, *other, **kw):
@@ -111,12 +109,16 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             return self.operate(oper.contains_op, other, escape=escape)
 
         def _do_compare(self, op, other, escape):
-            """Perform coalesced comparison operations to the columns of Translation model.
-            Looking into the the next language if the given language is not filled in.
+            """Perform comparison operations to the columns of the Translation model.
+            Looking into all languages using the OR operator.
             """
             related = self.property.mapper.class_
-            cols = [getattr(related, lang) for lang in helpers.get_ordered_languages() if hasattr(related, lang)]
-            return self.has(op(func.coalesce(*cols), other, escape=escape))
+            ops = [
+                op(getattr(related, lang), other, escape=escape)
+                for lang in helpers.get_ordered_languages()
+                if hasattr(related, lang)
+            ]
+            return self.has(or_(*ops))
 
     class TranslationExtension(AttributeExtension):
         """AttributeExtension to override the behavior of .set, to accept a dict as new value."""

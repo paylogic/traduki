@@ -1,7 +1,6 @@
 from os.path import abspath, dirname, join
 
 from setuptools import setup, find_packages
-import sys
 
 long_description = []
 
@@ -13,7 +12,7 @@ setup(
     name='traduki',
     description='SQLAlchemy internationalisation',
     long_description='\n'.join(long_description),
-    version='1.0.1',
+    version='1.1.0',
     author='Paylogic International',
     author_email='developers@paylogic.com',
     license='MIT',
