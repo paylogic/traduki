@@ -13,7 +13,7 @@ from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.interfaces import AttributeExtension
 from sqlalchemy.orm.properties import RelationshipProperty
-from sqlalchemy.sql import operators as oper, functions as func
+from sqlalchemy.sql import operators as oper, or_
 
 from traduki import config
 from traduki import helpers
@@ -120,7 +120,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
                 for lang in helpers.get_ordered_languages()
                 if hasattr(related, lang)
             ]
-            return self.has(oper.or_(*ops))
+            return self.has(or_(*ops))
 
     class TranslationExtension(AttributeExtension):
         """AttributeExtension to override the behavior of .set, to accept a dict as new value."""

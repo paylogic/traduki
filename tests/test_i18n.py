@@ -16,7 +16,7 @@ Base = declarative_base()
 @pytest.fixture(scope='session')
 def languages():
     """Supported languages."""
-    return ['en', 'pt']
+    return ['en', 'nl', 'pt']
 
 
 @pytest.fixture(scope='session')
@@ -68,7 +68,7 @@ def engine(request, model_class):
 @pytest.fixture
 def model_title():
     """Model title."""
-    return {'en': 'En Title', 'pt': 'Pt Title'}
+    return {'en': 'En Title', 'nl': 'Nl Title', 'pt': 'Pt Title'}
 
 
 @pytest.fixture
@@ -110,9 +110,15 @@ def test_set(model):
     assert model.title.get_dict() == {'en': 'New'}
 
 
-def test_comparator(session, model, model_class):
-    """Test field comparator."""
+def test_startswith(session, model, model_class):
+    """Test startswith comparator."""
     assert model in session.query(model_class).filter(model_class.title.startswith('En Title'))
     assert model in session.query(model_class).filter(model_class.title.startswith('Pt Title'))
+    assert model not in session.query(model_class).filter(model_class.title.startswith('Fr Title'))
+
+
+def test_contains(session, model, model_class):
+    """Test contains comparator."""
     assert model in session.query(model_class).filter(model_class.title.contains('En'))
     assert model in session.query(model_class).filter(model_class.title.contains('Pt'))
+    assert model not in session.query(model_class).filter(model_class.title.contains('Fr'))
