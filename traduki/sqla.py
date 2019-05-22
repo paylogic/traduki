@@ -8,9 +8,9 @@ public functions: initialize i18n_column, i18n_relation.
 """
 import collections
 
-from sqlalchemy import Column, Integer, ForeignKey, UnicodeText
+from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, event
 from sqlalchemy.exc import ArgumentError
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapper
 from sqlalchemy.orm.interfaces import AttributeExtension
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.sql import operators as oper, or_
@@ -176,8 +176,18 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
                     "You cannot supply 'primaryjoin' argument to 'i18n_relation'")
             kwargs['primaryjoin'] = column == Translation.id
 
-        return relationship(
-            Translation, comparator_factory=comparator_factory,
-            extension=extension, lazy=lazy, **kwargs)
+        res = relationship(
+            Translation,
+            comparator_factory=comparator_factory,
+            # extension=extension,  # This emits a warning in sqlalchemy >= 1.3, trying to get rid of it
+            lazy=lazy,
+            **kwargs
+        )
+
+        @event.listens_for(mapper, 'before_configured')
+        def setup_translation_set():
+            event.listen(res, 'set', TranslationExtension.set, retval=True, active_history=True)
+
+        return res
 
     return Attributes(Translation=Translation, i18n_column=i18n_column, i18n_relation=i18n_relation)
