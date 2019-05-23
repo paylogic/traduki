@@ -1,11 +1,11 @@
 """Test SQLAlchemy i18n."""
+from __future__ import unicode_literals
 import pytest
 
 from sqlalchemy import Column, Integer, UnicodeText, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 
 import traduki
 

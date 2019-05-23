@@ -181,12 +181,20 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             comparator_factory=comparator_factory,
             # extension=extension,  # This emits a warning in sqlalchemy >= 1.3, trying to get rid of it
             lazy=lazy,
+            active_history=True,
             **kwargs
         )
 
         @event.listens_for(mapper, 'before_configured')
         def setup_translation_set():
-            event.listen(res, 'set', TranslationExtension.set, retval=True, active_history=True, propagate=True)
+            event.listen(
+                res,
+                'set',
+                TranslationExtension.set,
+                retval=True,
+                active_history=True,  # TODO: This doesn't seem to be needed anymore. Remove before merging?
+                propagate=True,
+            )
 
         return res
 
