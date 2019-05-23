@@ -153,6 +153,7 @@ def test_inheritance(languages):
 
     d = Dog()
     d.name = {'en': 'Bob'}
+    assert d.name.get_dict()['en'] == 'Bob'
     # At this point d.name should be an instance of Translation, but instead it's a dict
     session.add(d)  # This breaks
     session.commit()
