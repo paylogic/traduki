@@ -186,7 +186,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
 
         @event.listens_for(mapper, 'before_configured')
         def setup_translation_set():
-            event.listen(res, 'set', TranslationExtension.set, retval=True, active_history=True)
+            event.listen(res, 'set', TranslationExtension.set, retval=True, active_history=True, propagate=True)
 
         return res
 
