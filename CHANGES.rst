@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.0
+-----
+
+* Do not use deprecated AttributeExtension, use Attribute Events instead.
+
 1.1.0
 -----
 
