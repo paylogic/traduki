@@ -35,7 +35,9 @@ class TranslationMixin(object):
         """
         return dict(
             (language, getattr(self, language))
-            for language in helpers.get_supported_languages() if getattr(self, language))
+            for language in helpers.get_supported_languages()
+            if getattr(self, language)
+        )
 
     def get_text(self, code=None, chain=None):
         """Get the text for specified language code.
@@ -167,8 +169,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         """
         if column is not None:
             if 'primaryjoin' in kwargs:
-                raise ArgumentError(
-                    "You cannot supply 'primaryjoin' argument to 'i18n_relation'")
+                raise ArgumentError("You cannot supply 'primaryjoin' argument to 'i18n_relation'")
             kwargs['primaryjoin'] = column == Translation.id
 
         res = relationship(
