@@ -11,7 +11,7 @@ import collections
 from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, event
 from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship, mapper
-from sqlalchemy.orm.interfaces import AttributeExtension
+from sqlalchemy.orm.base import NO_VALUE, NEVER_SET
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.sql import operators as oper, or_
 
@@ -120,37 +120,33 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             ]
             return self.has(or_(*ops))
 
-    class TranslationExtension(AttributeExtension):
-        """AttributeExtension to override the behavior of .set, to accept a dict as new value."""
+    def translation_attribute_set_hook(state, value, oldvalue, initiator):
+        """Set accessor for the `Translation` object.
 
-        @staticmethod
-        def set(state, value, oldvalue, initiator):
-            """Set accessor for the `Translation` object.
+        :note: The value is copied using dict to avoid 2 objects
+            referring to the same Translation. Also the oldvalue should
+            wipe the values for the languages that are not in the value.
 
-            :note: The value is copied using dict to avoid 2 objects
-                referring to the same Translation. Also the oldvalue should
-                wipe the values for the languages that are not in the value.
+        :param state: SQLAlchemy instance state.
+        :param value: The value that is being assigned.
+        :param oldvalue: The current value.
+        :param initiator: SQLAlchemy initiator (accessor).
+        """
+        if value is None or value in (NO_VALUE, NEVER_SET):
+            return None
 
-            :param state: SQLAlchemy instance state.
-            :param value: The value that is being assigned.
-            :param oldvalue: The current value.
-            :param initiator: SQLAlchemy initiator (accessor).
-            """
-            if value is None:
-                return None
+        if isinstance(value, dict):
+            value_dict = value
+        else:
+            value_dict = value.get_dict()
 
-            if isinstance(value, dict):
-                value_dict = value
-            else:
-                value_dict = value.get_dict()
+        if oldvalue is None:
+            return Translation(**value_dict)
+        else:
+            for lang in helpers.get_ordered_languages():
+                setattr(oldvalue, lang, value_dict.get(lang))
 
-            if oldvalue is None:
-                return Translation(**value_dict)
-            else:
-                for lang in helpers.get_ordered_languages():
-                    setattr(oldvalue, lang, value_dict.get(lang))
-
-            return oldvalue
+        return oldvalue
 
     def i18n_column(*args, **kwargs):
         """Create Column which is a ForeignKey to Translation class generated during initialization of the package.
@@ -161,8 +157,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         kw.update(**kwargs)
         return Column(Integer, ForeignKey(Translation.id), *args, **kw)
 
-    def i18n_relation(column=None, comparator_factory=TranslationComparator,
-                      extension=TranslationExtension, lazy=True, **kwargs):
+    def i18n_relation(column=None, comparator_factory=TranslationComparator, lazy=True, **kwargs):
         """Convenience function for a relationship to i18n.Translation.
 
         :param column: The column that stores ID of localized text,
@@ -179,20 +174,22 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         res = relationship(
             Translation,
             comparator_factory=comparator_factory,
-            # extension=extension,  # This emits a warning in sqlalchemy >= 1.3, trying to get rid of it
             lazy=lazy,
+            # This required only for sqlalchemy < 1.3.4. See https://github.com/sqlalchemy/sqlalchemy/issues/4691
             active_history=True,
             **kwargs
         )
 
+        # We must attach the event on before_configured, otherwise it is too late if we use after_configured, as other
+        # hooks are also installed by sqlalchemy
         @event.listens_for(mapper, 'before_configured')
         def setup_translation_set():
             event.listen(
                 res,
                 'set',
-                TranslationExtension.set,
+                translation_attribute_set_hook,
                 retval=True,
-                active_history=True,  # TODO: This doesn't seem to be needed anymore. Remove before merging?
+                active_history=True,
                 propagate=True,
             )
 
