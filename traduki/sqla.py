@@ -134,6 +134,8 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
         :param oldvalue: The current value.
         :param initiator: SQLAlchemy initiator (accessor).
         """
+        # Need to check also against SQLAlchemy symbols:
+        # https://github.com/sqlalchemy/sqlalchemy/issues/4691#issuecomment-495269727
         if value is None or value in (NO_VALUE, NEVER_SET):
             return None
 
@@ -181,8 +183,8 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
             **kwargs
         )
 
-        # We must attach the event on before_configured, otherwise it is too late if we use after_configured, as other
-        # hooks are also installed by sqlalchemy
+        # We must attach the event on before_configured. If we use after_configured, we're too late
+        # as other hooks will already be installed by SQLAlchemy.
         @event.listens_for(mapper, 'before_configured')
         def setup_translation_set():
             event.listen(
