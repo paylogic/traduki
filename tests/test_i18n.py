@@ -1,11 +1,11 @@
 """Test SQLAlchemy i18n."""
+from __future__ import unicode_literals
 import pytest
 
-from sqlalchemy import Column, Integer, UnicodeText
+from sqlalchemy import Column, Integer, UnicodeText, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 
 import traduki
 
@@ -122,3 +122,39 @@ def test_contains(session, model, model_class):
     assert model in session.query(model_class).filter(model_class.title.contains('En'))
     assert model in session.query(model_class).filter(model_class.title.contains('Pt'))
     assert model not in session.query(model_class).filter(model_class.title.contains('Fr'))
+
+
+def test_inheritance(languages):
+    Base = declarative_base()
+
+    i18n_attributes = traduki.initialize(Base, languages, lambda: 'en', lambda: {})
+
+    class Animal(Base):
+        __tablename__ = 'animal'
+        __mapper_args__ = {
+            'polymorphic_on': 'type',
+            'with_polymorphic': '*'
+        }
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+
+        name_id = i18n_attributes.i18n_column(nullable=False, unique=False)
+        name = i18n_attributes.i18n_relation(name_id)
+
+        type = Column(String(255), nullable=False, index=True)
+
+    class Dog(Animal):
+        __mapper_args__ = {'polymorphic_identity': 'dog'}
+
+    engine = create_engine('sqlite:///:memory:')
+    Base.metadata.create_all(engine)
+
+    session = sessionmaker(bind=engine)()
+
+    d = Dog()
+    d.name = {'en': 'Bob'}
+    assert d.name.get_dict()['en'] == 'Bob'
+
+    session.add(d)
+    session.commit()
+    assert d.name.get_dict()['en'] == 'Bob'
