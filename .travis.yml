@@ -1,13 +1,23 @@
 language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+
 # command to install dependencies
 install:
-  - pip install python-coveralls virtualenv tox
-# # command to run tests
+  - pip install coveralls virtualenv tox tox-travis
+
+# command to run tests
 script: tox
+
 after_success:
   - pip install -r requirements-testing.txt -e .
   - py.test --cov=traduki --cov-report=term-missing tests
   - coveralls
+
 notifications:
     email:
         - opensource-tests@paylogic.com

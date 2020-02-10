@@ -8,6 +8,7 @@ public functions: initialize i18n_column, i18n_relation.
 """
 import collections
 
+import six
 from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, event
 from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship, mapper
@@ -22,6 +23,7 @@ from traduki import helpers
 Attributes = collections.namedtuple('Attributes', ['Translation', 'i18n_column', 'i18n_relation'])
 
 
+@six.python_2_unicode_compatible
 class TranslationMixin(object):
     """Helper for future translation class which is created during initialization."""
 
@@ -52,11 +54,15 @@ class TranslationMixin(object):
         """
         return helpers.get_text_from_dict(self.get_dict(), code=code, chain=chain)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_text() or u''
 
+    def __bool__(self):
+        return bool(six.text_type(self))
+
+    # Python 2 compatibility
     def __nonzero__(self):
-        return bool(unicode(self))
+        return self.__bool__()
 
 
 def initialize(base, languages, get_current_language_callback, get_language_chain_callback, attributes=None):

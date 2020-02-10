@@ -1,6 +1,7 @@
 """Test SQLAlchemy i18n."""
 from __future__ import unicode_literals
 import pytest
+import six
 
 from sqlalchemy import Column, Integer, UnicodeText, String
 from sqlalchemy import create_engine
@@ -108,6 +109,32 @@ def test_set(model):
     """Test changing of the field value."""
     model.title = {'en': 'New'}
     assert model.title.get_dict() == {'en': 'New'}
+
+
+@pytest.mark.parametrize(
+    'model_title, expected',
+    [
+        ({'en': 'english title', 'nl': 'dutch title'}, 'english title'),
+        ({'nl': 'dutch title'}, 'dutch title'),
+        ({}, ''),
+    ]
+)
+def test_stringification(model, expected):
+    """Test that str(model) returns a string with the translated text."""
+    assert six.text_type(model.title) == expected
+
+
+@pytest.mark.parametrize(
+    'model_title, expected',
+    [
+        ({'en': 'title'}, True),
+        ({'en': ''}, False),
+        ({}, False),
+    ]
+)
+def test_bool(model, expected):
+    """Test that bool(model) returns only when there is an actual translation"""
+    assert bool(model.title) is expected
 
 
 def test_startswith(session, model, model_class):
