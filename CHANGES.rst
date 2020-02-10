@@ -1,10 +1,10 @@
 Changelog
 =========
 
-1.2.1
+1.3.0
 -----
 
-* Address python 3 compatibility
+* Fix python 3 compatibility
 * Declare support for python 2.7, 3.5, 3.6, 3.7, 3.8
 
 1.2.0
