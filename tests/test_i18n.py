@@ -124,6 +124,19 @@ def test_stringification(model, expected):
     assert six.text_type(model.title) == expected
 
 
+@pytest.mark.parametrize(
+    'model_title, expected',
+    [
+        ({'en': 'title'}, True),
+        ({'en': ''}, False),
+        ({}, False),
+    ]
+)
+def test_bool(model, expected):
+    """Test that bool(model) returns only when there is an actual translation"""
+    assert bool(model.title) is expected
+
+
 def test_startswith(session, model, model_class):
     """Test startswith comparator."""
     assert model in session.query(model_class).filter(model_class.title.startswith('En Title'))
