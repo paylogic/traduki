@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.2.1
+-----
 
 * Address python 3 compatibility
 * Declare support for python 2.7, 3.5, 3.6, 3.7, 3.8
