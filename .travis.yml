@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 language: python
 # command to install dependencies
 install:
