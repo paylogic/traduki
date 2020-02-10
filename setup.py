@@ -19,6 +19,7 @@ setup(
     url='https://github.com/paylogic/traduki',
     install_requires=[
         'SQLAlchemy',
+        'six>=1.9.0',
     ],
     packages=find_packages(exclude=['ez_setup', 'tests']),
     dependency_links=[],

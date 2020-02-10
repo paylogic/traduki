@@ -8,6 +8,7 @@ public functions: initialize i18n_column, i18n_relation.
 """
 import collections
 
+import six
 from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, event
 from sqlalchemy.exc import ArgumentError
 from sqlalchemy.orm import relationship, mapper
