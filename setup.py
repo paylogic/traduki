@@ -1,3 +1,4 @@
+import io
 from os.path import abspath, dirname, join
 
 from setuptools import setup, find_packages
@@ -5,14 +6,14 @@ from setuptools import setup, find_packages
 long_description = []
 
 for text_file in ['README.rst', 'CHANGES.rst']:
-    with open(join(dirname(abspath(__file__)), text_file), 'r') as f:
+    with io.open(join(dirname(abspath(__file__)), text_file), 'r', encoding='utf-8') as f:
         long_description.append(f.read())
 
 setup(
     name='traduki',
     description='SQLAlchemy internationalisation',
-    long_description='\n'.join(long_description),
-    version='1.3.0',
+    long_description=u'\n'.join(long_description),
+    version='1.3.1',
     author='Paylogic International',
     author_email='developers@paylogic.com',
     license='MIT',
