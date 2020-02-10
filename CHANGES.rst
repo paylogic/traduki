@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.1
+-----
+* Fix UnicodeDecodeError when installing this library on python 3 on some configurations.
+
 1.3.0
 -----
 
