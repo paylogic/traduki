@@ -187,7 +187,7 @@ def test_inheritance(languages):
     assert d.name.get_dict()['en'] == 'Bob'
 
 
-def test_get_ordered_langauge_should_not_modify_the_settings():
+def test_get_ordered_language_should_not_modify_the_settings():
     """Test a regression where `get_ordered_languages` would modify the `config.LANGUAGES` list in place."""
     Base = declarative_base()
 
