@@ -13,7 +13,7 @@ setup(
     name='traduki',
     description='SQLAlchemy internationalisation',
     long_description=u'\n'.join(long_description),
-    version='1.3.1',
+    version='1.3.2',
     author='Paylogic International',
     author_email='developers@paylogic.com',
     license='MIT',
