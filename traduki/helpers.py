@@ -116,8 +116,7 @@ def get_ordered_languages():
     languages = get_supported_languages()
     default_lang = get_language()
     if default_lang in languages:
-        languages.pop(languages.index(default_lang))
-        languages.insert(0, default_lang)
+        languages = [default_lang] + [language for language in languages if language != default_lang]
     return languages
 
 

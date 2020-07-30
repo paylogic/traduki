@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import traduki
-
+from traduki.helpers import get_ordered_languages
 
 Base = declarative_base()
 
@@ -185,3 +185,20 @@ def test_inheritance(languages):
     session.add(d)
     session.commit()
     assert d.name.get_dict()['en'] == 'Bob'
+
+
+def test_get_ordered_language_should_not_modify_the_settings():
+    """Test a regression where `get_ordered_languages` would modify the `config.LANGUAGES` list in place."""
+    Base = declarative_base()
+
+    languages = ['en', 'nl', 'de']
+    traduki.initialize(
+        Base,
+        languages,
+        get_current_language_callback=lambda: 'nl',
+        get_language_chain_callback=lambda: {},
+    )
+
+    assert get_ordered_languages() == ['nl', 'en', 'de']
+
+    assert languages == ['en', 'nl', 'de']

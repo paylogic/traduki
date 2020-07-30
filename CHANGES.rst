@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.2
+-----
+* Fix a bug where the `get_ordered_languages` would mutate in place the list of configured languages.
+
 1.3.1
 -----
 * Fix UnicodeDecodeError when installing this library on python 3 on some configurations.
