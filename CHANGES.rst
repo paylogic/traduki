@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.3
+-----
+* Fix sqlalchemy 2.0 compatibility warning by using `sqlalchemy.orm.Mapper` instead of `sqlalchemy.orm.mapper`.
+
 1.3.2
 -----
 * Fix a bug where the `get_ordered_languages` would mutate in place the list of configured languages.
