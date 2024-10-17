@@ -11,7 +11,7 @@ import collections
 import six
 from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, event
 from sqlalchemy.exc import ArgumentError
-from sqlalchemy.orm import relationship, mapper
+from sqlalchemy.orm import relationship, Mapper
 from sqlalchemy.orm.base import NO_VALUE, NEVER_SET
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.sql import operators as oper, or_
@@ -191,7 +191,7 @@ def initialize(base, languages, get_current_language_callback, get_language_chai
 
         # We must attach the event on before_configured. If we use after_configured, we're too late
         # as other hooks will already be installed by SQLAlchemy.
-        @event.listens_for(mapper, 'before_configured')
+        @event.listens_for(Mapper, 'before_configured')
         def setup_translation_set():
             event.listen(
                 res,
